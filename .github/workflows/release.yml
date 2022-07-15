@@ -1,0 +1,78 @@
+name: Release
+
+env:
+  RELEASE_FILE_NAME: Genshin_Impact_Tools
+
+
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        include:
+          - os: windows-2022
+            python-version: "3.9"
+            extra-name: ""
+          - os: windows-2019
+            python-version: "3.7"
+            extra-name: "_win7"
+    
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python version
+      id: setup-python
+      uses: actions/setup-python@v3
+      with:
+        python-version: ${{matrix.python-version}}
+        architecture: x64
+    
+    - name: Cache Python packages
+      id: cache-pip
+      uses: actions/cache@v2
+      env:
+        cache-name: cache-python-${{ steps.setup-python.outputs.python-version }}
+      if: startsWith(runner.os, 'Windows')
+      with:
+        path: ~\AppData\Local\pip\Cache
+        # 使用依赖文件hash值创建缓存key
+        key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
+        restore-keys: |
+            ${{ runner.os }}-pip-${{ env.cache-name }}-
+            ${{ runner.os }}-pip-
+            ${{ runner.os }}-
+    
+    - name: Install Python lib
+      run: pip install -r requirements.txt
+
+    - name: build
+      run: pyinstaller --clean ./main.spec
+    
+    - name: create zip
+      run: Compress-Archive dist\${{env.RELEASE_FILE_NAME}}.exe ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}.zip
+    
+    - name: clean build
+      run: |
+        rm -r dist\*
+
+    - name: get current date
+      id: time
+      run: |
+        echo "::set-output name=current-date::$(date +'%Y-%m-%d')"
+    
+    - name: Release
+      uses: softprops/action-gh-release@v1
+      env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        name: ${{env.RELEASE_FILE_NAME}} ${{github.ref_name}} (${{steps.time.outputs.current-date}})
+        tag_name: ${{github.ref_name}}
+        files: ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}.zip
+        draft: false
+        prerelease: false
