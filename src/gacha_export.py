@@ -177,6 +177,7 @@ class BaseGenerator:
     def generator(self):
         pass
 
+
 class GeneratorXLSX(BaseGenerator):
     def __init__(self, data=None) -> None:
         super().__init__(data)
@@ -323,7 +324,7 @@ class GeneratorTXT(BaseGenerator):
                 f"5星数量: { len(temp_info['5']) }\n5星详情: { ','.join(level_5_info) }\n"\
                 f"距上次出5星已累计抽卡次数: { temp_info['last_gacha_count'] }\n"
         
-        logger.info("开始生成报告……")
+        logger.debug("开始生成TXT报告……")
         reports = []
         for gacha_type_id in GachaTypeEnum.GACHA_QUERY_TYPE_IDS.value:
             data = self.result[gacha_type_id]
@@ -380,11 +381,15 @@ class GachaReport:
         return history_data
 
     def runGenerator(self):
+        logger.info("开始生成报告……")
         result = True
         for generator in self.generator_list:
             generator.data = self.data
             result = result & generator.generator()
+        logger.info("抽卡统计已完成")
         return result
+
+
 class GachaExportTool:
     """
     抽卡导出工具类
