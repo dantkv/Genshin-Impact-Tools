@@ -58,6 +58,8 @@ class GachaData:
         """
         合并历史查询记录
         """
+        if not self._data:
+            return merge_data
         for gacha_type in GachaTypeEnum.GACHA_QUERY_TYPE_DICT.value:
             history_gacha_log = merge_data["gacha_log"][gacha_type]
             new_gacha_log = self._data["gacha_log"][gacha_type]
@@ -176,6 +178,7 @@ class BaseGenerator:
     
     def generator(self):
         pass
+    
 
 
 class GeneratorXLSX(BaseGenerator):
