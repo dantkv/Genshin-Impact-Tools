@@ -87,7 +87,7 @@ class GachaData:
             with open(USER_DATA_ENUM.GACHA_DATA_FILE_PATH, "r", encoding="UTF-8") as f:
                 history_data = json.load(f)
             return history_data
-
+        
         history_data = loadHistory()
         if history_data:
             self._data = self._mergeData(history_data)
@@ -372,16 +372,6 @@ class GachaReport:
 
     def removeGenerator(self, generaotor):
         self.generator_list.remove(generaotor)
-
-    @catchException("历史抽卡记录文件加载失败")
-    def loadHistoryData(self):
-        if not os.path.exists(USER_DATA_ENUM.GACHA_DATA_FILE_PATH):
-            logger.error("历史抽卡记录文件不存在")
-            return None
-        with open(USER_DATA_ENUM.GACHA_DATA_FILE_PATH, "r", encoding="UTF-8") as f:
-            history_data = json.load(f)
-        self.data = history_data
-        return history_data
 
     def runGenerator(self):
         logger.info("开始生成报告……")
