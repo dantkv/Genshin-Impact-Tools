@@ -158,15 +158,7 @@ class GachaData:
 class BaseGenerator:
     
     def __init__(self, data = None) -> None:
-        self._data=data
-
-    @property
-    def data(self):
-        return self._data
-
-    @data.setter
-    def data(self, data):
-        self._data = data
+        self.data=data
     
     def generator(self):
         pass
@@ -193,7 +185,7 @@ class GeneratorXLSX(BaseGenerator):
         star_3 = workbook.add_format({"color": "#8e8e8e"})
 
         for gacha_type_id in GachaTypeEnum.GACHA_QUERY_TYPE_IDS.value:
-            gacha_type_List = self._data["gacha_log"][gacha_type_id][:]
+            gacha_type_List = self.data["gacha_log"][gacha_type_id][:]
             gacha_type_name = GachaTypeEnum.GACHA_TYPE_DICT.value[gacha_type_id]
 
             logger.debug("开始写入 {}, 共 {} 条数据", gacha_type_name, len(gacha_type_List))
@@ -247,15 +239,15 @@ class GeneratorTXT(BaseGenerator):
         统计数据并保存
         """
         # TODO 添加3星各类武器统计数量
-        gacha_log = self._data["gacha_log"]
-        self.result["uid"] = self._data["uid"]
+        gacha_log = self.data["gacha_log"]
+        self.result["uid"] = self.data["uid"]
         for gacha_type_id in gacha_log:
             # 取得每类抽卡数据字典
             gacha_list = gacha_log[gacha_type_id]
             
             self.result[gacha_type_id] = {}
             result_type = self.result[gacha_type_id]
-            result_type["name"] = self._data["gacha_type"][gacha_type_id]
+            result_type["name"] = self.data["gacha_type"][gacha_type_id]
             result_type["total_count"] = len(gacha_list)
             if not len(gacha_list):
                 continue
