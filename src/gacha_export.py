@@ -40,10 +40,10 @@ class GachaData:
     抽卡数据类
     """
     def __init__(self, url:str, uid:str) -> None:
-        self._uid = uid
-        self._url = url
+        self.uid = uid
+        self.url = url
         # 抽卡数据
-        self._data = dict()
+        self.data = dict()
 
     @catchException("保存抽卡记录失败")
     def saveData(self):
@@ -51,18 +51,18 @@ class GachaData:
         保存抽卡数据
         """
         with open(USER_DATA_ENUM.GACHA_DATA_FILE_PATH, "w", encoding="utf-8") as f:
-            json.dump(self._data, f, ensure_ascii=False, sort_keys=False, indent=4)
+            json.dump(self.data, f, ensure_ascii=False, sort_keys=False, indent=4)
         return True
     
     def _mergeData(self, merge_data:dict):
         """
         合并历史查询记录
         """
-        if not self._data:
+        if not self.data:
             return merge_data
         for gacha_type in GachaTypeEnum.GACHA_QUERY_TYPE_DICT.value:
             history_gacha_log = merge_data["gacha_log"][gacha_type]
-            new_gacha_log = self._data["gacha_log"][gacha_type]
+            new_gacha_log = self.data["gacha_log"][gacha_type]
             if len(history_gacha_log):
                 history_latest_data = history_gacha_log[-1]
                 # 根据抽卡id比较大小，找出新的抽卡记录并保存在 temp_gacha_data
@@ -90,15 +90,7 @@ class GachaData:
         
         history_data = loadHistory()
         if history_data:
-            self._data = self._mergeData(history_data)
-    
-    @property
-    def data(self):
-        return self._data
-    
-    @data.setter
-    def data(self, _data):
-        self._data = _data
+            self.data = self._mergeData(history_data)
 
     def _getGachaLogsByTypeId(self, gacha_type_id):
         """
@@ -126,7 +118,7 @@ class GachaData:
         """
         设置分页查询参数
         """
-        parsed = parse.urlparse(self._url)
+        parsed = parse.urlparse(self.url)
         querys = parse.parse_qsl(str(parsed.query))
         param_dict = dict(querys)
 
@@ -138,7 +130,7 @@ class GachaData:
 
         param = parse.urlencode(param_dict)
 
-        path = str(self._url).split("?")[0]
+        path = str(self.url).split("?")[0]
         api = path + "?" + param
         return api
     
@@ -148,18 +140,18 @@ class GachaData:
         """
         logger.info("开始获取抽卡记录")
         
-        self._data["uid"] = self._uid
-        self._data["gacha_type"] = GachaTypeEnum.GACHA_QUERY_TYPE_DICT.value
-        self._data["gacha_log"] = {}
+        self.data["uid"] = self.uid
+        self.data["gacha_type"] = GachaTypeEnum.GACHA_QUERY_TYPE_DICT.value
+        self.data["gacha_log"] = {}
 
         for gacha_type_id in GachaTypeEnum.GACHA_QUERY_TYPE_IDS.value:
             # 查询时间顺序由近到远
             gachaLog = self._getGachaLogsByTypeId(gacha_type_id)
             # 翻转后正序排列
             gachaLog.reverse()
-            self._data["gacha_log"][gacha_type_id] = gachaLog
+            self.data["gacha_log"][gacha_type_id] = gachaLog
 
-        return self._data
+        return self.data
     
     
 
