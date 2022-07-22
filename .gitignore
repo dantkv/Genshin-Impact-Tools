@@ -1,11 +1,19 @@
+### VSCode
+.vscode
+
 ### Python
 __pycache__
 dist
 build
 
 
-### DIR
+### Project
 log
 data
 tmp
 
+
+### env
+*_venv
+*.egg-info
+.pytest_cache
