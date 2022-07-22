@@ -340,16 +340,8 @@ class GachaReport:
         """
         data: 原始抽卡记录
         """
-        self._data = data
+        self.data = data
         self.generator_list = generator_list
-    
-    @property
-    def data(self):
-        return self._data
-    
-    @data.setter
-    def data(self, value):
-        self._data = value
     
     def addGenerator(self, generaotor):
         self.generator_list.append(generaotor)
