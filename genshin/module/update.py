@@ -15,10 +15,8 @@ def getLatestVersionInfo():
     获取最后的Release信息
     """
 
-    r = requests.get(
-        "https://api.github.com/repos/dantkv/Genshin-Impact-Tools/releases/latest"
-    ).content.decode("utf-8")
-    data = json.loads(r)
+    r = requests.get("https://api.github.com/repos/dantkv/Genshin-Impact-Tools/releases/latest")
+    data = json.loads(r.content.decode("utf-8"))
     tag_name = data["tag_name"]
     download_info = list()
     for asset in data["assets"]:
@@ -48,6 +46,7 @@ def updateVersion():
     """
     更新软件版本号
     """
+
     def getNextVersion(version):
         """
         版本号+1

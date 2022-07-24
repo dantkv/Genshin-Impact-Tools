@@ -15,7 +15,7 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  MAX_LINE_LENGTH: 100
+  MAX_LINE_LENGTH: 120
 
 jobs:
   flake8:
