@@ -12,6 +12,9 @@ on:
 
 jobs:
   build:
+    defaults:
+      run:
+        shell: powershell
     strategy:
       matrix:
         include:
@@ -32,7 +35,7 @@ jobs:
       with:
         python-version: ${{matrix.python-version}}
         architecture: x64
-    
+
     - name: Cache Python packages
       id: cache-pip
       uses: actions/cache@v2
@@ -47,34 +50,44 @@ jobs:
             ${{ runner.os }}-pip-${{ env.cache-name }}-
             ${{ runner.os }}-pip-
             ${{ runner.os }}-
-    
-    - name: Install Python lib
+
+    - name: Install dependencies
       run: |
         pip install pyinstaller
         pip install -r requirements.txt
 
-    - name: build
+    - name: Build
       run: pyinstaller --clean ./main.spec
-    
-    - name: create zip
-      run: Compress-Archive dist\${{env.RELEASE_FILE_NAME}}.exe ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}.zip
-    
-    - name: clean build
+
+    - name: Rename file 
+      id: rename-file
+      run: |
+        echo "::set-output name=file-name::${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}_${{github.ref_name}}"
+        Rename-Item -Path dist\${{env.RELEASE_FILE_NAME}}.exe `
+              ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}_${{github.ref_name}}.exe
+
+    - name: Create zip
+      run: Compress-Archive dist\${{steps.rename-file.outputs.file-name}}.exe `
+          ${{steps.rename-file.outputs.file-name}}.zip
+
+    - name: Clean build
       run: |
         rm -r dist\*
+        rm -r build\*
 
-    - name: get current date
+    - name: Get current date
       id: time
       run: |
         echo "::set-output name=current-date::$(date +'%Y-%m-%d')"
-    
+
     - name: Release
       uses: softprops/action-gh-release@v1
       env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
-        name: ${{env.RELEASE_FILE_NAME}} ${{github.ref_name}} (${{steps.time.outputs.current-date}})
+        name: ${{env.RELEASE_FILE_NAME}} ${{github.ref_name}}
+        body: ${{steps.time.outputs.current-date}}
         tag_name: ${{github.ref_name}}
-        files: ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}.zip
+        files: ${{steps.rename-file.outputs.file-name}}.zip
         draft: false
         prerelease: false
