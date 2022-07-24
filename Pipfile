@@ -1,0 +1,21 @@
+[[source]]
+name = "pypi"
+url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
+verify_ssl = true
+
+[packages]
+genshin = {editable = true, path = "."}
+loguru = "*"
+requests = "*"
+tqdm = "*"
+xlsxwriter = "*"
+
+[dev-packages]
+tox = "*"
+pylint = "*"
+isort = "*"
+pytest = "*"
+pytest-cov = "*"
+
+[requires]
+python_version = "3.9"

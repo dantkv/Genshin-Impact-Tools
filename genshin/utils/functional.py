@@ -1,33 +1,17 @@
-import sys
 import platform
 import traceback
-from loguru import logger
 from functools import wraps
 
-config = {
-    # format DOC：https://loguru.readthedocs.io/en/stable/api/logger.html#record
-    "handlers": [
-        {
-            "sink": sys.stdout, 
-            "format": "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | <level>{message}</level>", 
-            "level": "INFO", 
-            "colorize": True
-        },
-        {
-            "sink": "log/log_{time:YYYY-MM}.log", 
-            "format": "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {level} | {file}:{line} | {function}() | message:   {message}", 
-            "level":"DEBUG"
-        },
-    ],
-}
+from genshin.utils.logger import logger
 
-logger.configure(**config)
+
 def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     logger.info(msg)
     try:
         if platform.system() == "Windows":
             from msvcrt import getch
             getch()
+
         else:
             input()
     except KeyboardInterrupt:
@@ -36,7 +20,8 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
         logger.debug(traceback.format_exc())
     exit()
 
-def catchException(message:str="执行出错", level="error"):
+
+def catchException(message: str = "执行出错", level: str = "error"):
     def callFunction(func):
         @wraps(func)
         def decorated(*args, **kwargs):
@@ -54,5 +39,6 @@ def catchException(message:str="执行出错", level="error"):
                 logger.debug(traceback.format_exc())
                 return False
             return result
+
         return decorated
     return callFunction

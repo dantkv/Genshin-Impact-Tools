@@ -1,11 +1,13 @@
-from enum import Enum
 import os
 import sys
+from enum import Enum
+
 
 class CommonEnum(Enum):
     """
     常量枚举
     """
+
     ROOT_PATH = os.getcwd()
     # 数据文件根路径
     DATA_PATH = os.path.join(ROOT_PATH, "data")
@@ -17,36 +19,48 @@ class CommonEnum(Enum):
     USERPROFILE = os.environ["USERPROFILE"]
 
 
-class UserDataEnum():
+class UserDataEnum:
     """
     用户数据存储路径枚举
     """
 
-    def __init__(self, uid = None) -> None:
+    def __init__(self, uid=None) -> None:
         self.update(uid)
 
     def update(self, uid):
+        """
+        更新用户设置
+        """
         if not uid:
-            self.UID = UserDataEnum.getUID()
+            self.uid = UserDataEnum.get_uid()
         else:
-            self.UID = uid
+            self.uid = uid
         # 用户数据根目录
-        self.USER_DATA_PATH = os.path.join(CommonEnum.DATA_PATH.value, str(self.UID))
+        self.user_data_path = os.path.join(CommonEnum.DATA_PATH.value, str(self.uid))
         # 抽卡记录文件路径
-        self.GACHA_DATA_FILE_PATH = os.path.join(self.USER_DATA_PATH, "gacha_data.json")
+        self.gacha_data_file_path = os.path.join(self.user_data_path, "gacha_data.json")
         # 统计结果路径
-        self.RESULT_FILE_PATH = os.path.join(self.USER_DATA_PATH, "result.json")
+        self.result_file_path = os.path.join(self.user_data_path, "result.json")
         # 配置文件路径
-        self.CONFIG_FILE_PATH = os.path.join(self.USER_DATA_PATH, "config.json")
+        self.result_file_path = os.path.join(self.user_data_path, "config.json")
 
     @staticmethod
-    def getUID():
+    def get_uid():
         """
         从游戏文件获取UID
         """
-        uid_info_file = os.path.join(CommonEnum.USERPROFILE.value, "AppData", "LocalLow", "miHoYo", "原神", "UidInfo.txt")
+
+        uid_info_file = os.path.join(
+            CommonEnum.USERPROFILE.value,
+            "AppData",
+            "LocalLow",
+            "miHoYo",
+            "原神",
+            "UidInfo.txt",
+        )
         with open(uid_info_file, "r", encoding="utf-8", errors="ignore") as f:
             uid = f.readline().rstrip()
         return uid
+
 
 USER_DATA_ENUM = UserDataEnum()
