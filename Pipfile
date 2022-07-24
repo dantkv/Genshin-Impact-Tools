@@ -4,13 +4,13 @@ url = "https://pypi.tuna.tsinghua.edu.cn/simple/"
 verify_ssl = true
 
 [packages]
-genshin = {editable = true, path = "."}
 loguru = "*"
 requests = "*"
 tqdm = "*"
 xlsxwriter = "*"
 
 [dev-packages]
+genshin = {editable = true, path = "."}
 tox = "*"
 pylint = "*"
 isort = "*"
