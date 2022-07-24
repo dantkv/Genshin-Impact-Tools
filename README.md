@@ -56,6 +56,10 @@
 
 更多信息见 [**Wiki 帮助指南**][2]
 
+### Commit 规范
+
+https://www.conventionalcommits.org/zh-hans/v1.0.0
+
 ---
 
 本项目基于项目 **[genshin-gacha-export][1]** 修改而来
