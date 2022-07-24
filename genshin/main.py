@@ -8,46 +8,39 @@ from genshin.module.gacha_export import GachaExportTool
 from genshin.utils.functional import pressAnyKeyToExit
 from genshin.utils.logger import logger
 
+def run():
+    global_config = GlobalConfig()
+    logger.debug(CommonEnum.ROOT_PATH.value)
+    logger.debug(CommonEnum.DATA_PATH.value)
+    if not os.path.exists(CommonEnum.DATA_PATH.value):
+        os.mkdir(CommonEnum.DATA_PATH.value)
 
-class Main:
-    def __init__(self) -> None:
-        self._manu = []
-        self._global_config = GlobalConfig()
-        logger.debug(CommonEnum.ROOT_PATH.value)
-        logger.debug(CommonEnum.DATA_PATH.value)
-        if not os.path.exists(CommonEnum.DATA_PATH.value):
-            os.mkdir(CommonEnum.DATA_PATH.value)
+    logger.debug("config" + str(global_config.setting))
+    if global_config.get_key(GlobalConfigEnum.FLAG_CHECK_UPDATE.value):
+        try:
+            update.upgrade()
+        except Exception:
+            logger.warning("检查更新失败")
+            logger.debug(traceback.format_exc())
 
-        logger.debug("config" + str(self._global_config.setting))
+    # 设置用户
+    user_config = UserConfig(USER_DATA_ENUM.uid)
+    logger.info("当前用户为：{}", USER_DATA_ENUM.uid)
+    gacha_export_tool = GachaExportTool(user_config)
 
-    def run(self):
-        # 检测软件更新
-        if self._global_config.get_key(GlobalConfigEnum.FLAG_CHECK_UPDATE.value):
-            try:
-                update.upgrade()
-            except Exception:
-                logger.warning("检查更新失败")
-                logger.debug(traceback.format_exc())
+    if global_config.get_key(GlobalConfigEnum.FLAG_WRITE_TXT.value):
+        gacha_export_tool.generatorTXT()
+    if global_config.get_key(GlobalConfigEnum.FLAG_WRITE_XLSX.value):
+        gacha_export_tool.generatorXLSX()
 
-        # 设置用户
-        user_config = UserConfig(USER_DATA_ENUM.uid)
-        logger.info("当前用户为：{}", USER_DATA_ENUM.uid)
-        gacha_export_tool = GachaExportTool(user_config)
+    # 导出数据
+    if global_config.get_key(GlobalConfigEnum.FLAG_USE_CONFIG_URL.value):
+        status = gacha_export_tool.getGachaLogByConfig()
+    if not status and global_config.get_key(GlobalConfigEnum.FLAG_USE_LOG_URL.value):
+        status = gacha_export_tool.getGachaLogByGameLog()
 
-        if self._global_config.get_key(GlobalConfigEnum.FLAG_WRITE_TXT.value):
-            gacha_export_tool.generatorTXT()
-        if self._global_config.get_key(GlobalConfigEnum.FLAG_WRITE_XLSX.value):
-            gacha_export_tool.generatorXLSX()
-
-        # 导出数据
-        if self._global_config.get_key(GlobalConfigEnum.FLAG_USE_CONFIG_URL.value):
-            status = gacha_export_tool.getGachaLogByConfig()
-        if not status and self._global_config.get_key(GlobalConfigEnum.FLAG_USE_LOG_URL.value):
-            status = gacha_export_tool.getGachaLogByGameLog()
-
-        pressAnyKeyToExit()
+    pressAnyKeyToExit()
 
 
 if __name__ == "__main__":
-    main = Main()
-    main.run()
+    run()
