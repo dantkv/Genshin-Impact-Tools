@@ -12,7 +12,6 @@ from genshin.config import UserConfig, UserConfigEnum
 from genshin.utils.functional import catchException
 from genshin.utils.logger import logger
 
-
 # 抽卡类型ID
 GACHA_QUERY_TYPE_IDS = ["100", "200", "301", "302"]
 
