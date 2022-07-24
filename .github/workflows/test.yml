@@ -5,20 +5,21 @@ name: Python test
 
 on:
   push:
-    branches: [ "main" ]
+    branches:
+      - main
     paths:
-      - 'genshin'
-      - 'tests'
+      - 'genshin/**'
+      - 'tests/**'
   pull_request:
     paths:
-      - 'genshin'
-      - 'tests'
+      - 'genshin/**'
+      - 'tests/**'
 
 permissions:
   contents: read
 
 jobs:
-  build:
+  pytest:
 
     runs-on: windows-2022
 
@@ -28,27 +29,14 @@ jobs:
       uses: actions/setup-python@v3
       with:
         python-version: "3.9"
-    
-    - name: Cache Python packages
-      id: cache-pip
-      uses: actions/cache@v2
-      env:
-        cache-name: cache-python-${{ steps.setup-python.outputs.python-version }}
-      if: startsWith(runner.os, 'Windows')
-      with:
-        path: ~\AppData\Local\pip\Cache
-        # 使用依赖文件hash值创建缓存key
-        key: ${{ runner.os }}-pip-${{ env.cache-name }}-${{ hashFiles('**/requirements.txt') }}
-        restore-keys: |
-            ${{ runner.os }}-pip-${{ env.cache-name }}-
-            ${{ runner.os }}-pip-
-            ${{ runner.os }}-
 
     - name: Install dependencies
       run: |
-        pip install pytest pytest-cov .
-        pip install -r requirements.txt
+        python -m pip install pytest pytest-cov -e .
+        python -m pip install -r requirements.txt
     
     - name: Test with pytest
-      run: |
-        pytest --cov=genshin
+      uses: liskin/gh-problem-matcher-wrap@v1
+      with:
+        linters: pytest
+      run: pytest --cov=genshin
