@@ -49,7 +49,9 @@ jobs:
             ${{ runner.os }}-
     
     - name: Install Python lib
-      run: pip install -r requirements.txt
+      run: |
+        pip install pyinstaller
+        pip install -r requirements.txt
 
     - name: build
       run: pyinstaller --clean ./main.spec
