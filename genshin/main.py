@@ -8,6 +8,7 @@ from genshin.module.gacha_export import GachaExportTool
 from genshin.utils.functional import pressAnyKeyToExit
 from genshin.utils.logger import logger
 
+
 def run():
     global_config = GlobalConfig()
     logger.debug(CommonEnum.ROOT_PATH.value)

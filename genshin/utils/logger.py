@@ -13,7 +13,7 @@ config = {
         },
         {
             "sink": "log/log_{time:YYYY-MM}.log",
-            "format": "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {level} | {file}:{line} | {function}() | message: {message}",
+            "format": "<green>{time:YYYY-MM-DD HH:mm:ss}</green> | {level} | {file}:{line} | {function}() | message: {message}",  # noqa: E501
             "level": "DEBUG",
         },
     ],

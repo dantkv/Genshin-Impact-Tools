@@ -221,7 +221,15 @@ class GeneratorXLSX(BaseGenerator):
                 gacha_type_name = GACHA_TYPE_DICT.get(gacha_type, "")
                 total_counter = total_counter + 1
                 pity_counter = pity_counter + 1
-                excel_data = [total_counter, time_str, name, item_type, rank_type, gacha_type_name, pity_counter]
+                excel_data = [
+                    total_counter,
+                    time_str,
+                    name,
+                    item_type,
+                    rank_type,
+                    gacha_type_name,
+                    pity_counter,
+                ]
                 worksheet.write_row(total_counter, 0, excel_data, content_css)
                 if rank_type == 5:
                     pity_counter = 0
@@ -230,9 +238,27 @@ class GeneratorXLSX(BaseGenerator):
             first_col = 0  # 第一列
             last_row = len(gacha_type_List)  # 最后一行
             last_col = len(excel_header) - 1  # 最后一列，zero indexed 所以要减 1
-            worksheet.conditional_format(first_row, first_col, last_row, last_col, {"type": "formula", "criteria": "=$E2=5", "format": star_5})
-            worksheet.conditional_format(first_row, first_col, last_row, last_col, {"type": "formula", "criteria": "=$E2=4", "format": star_4})
-            worksheet.conditional_format(first_row, first_col, last_row, last_col, {"type": "formula", "criteria": "=$E2=3", "format": star_3})
+            worksheet.conditional_format(
+                first_row,
+                first_col,
+                last_row,
+                last_col,
+                {"type": "formula", "criteria": "=$E2=5", "format": star_5},
+            )
+            worksheet.conditional_format(
+                first_row,
+                first_col,
+                last_row,
+                last_col,
+                {"type": "formula", "criteria": "=$E2=4", "format": star_4},
+            )
+            worksheet.conditional_format(
+                first_row,
+                first_col,
+                last_row,
+                last_col,
+                {"type": "formula", "criteria": "=$E2=3", "format": star_3},
+            )
 
         workbook.close()
         logger.debug("工作簿写入完成")
@@ -447,8 +473,22 @@ class GachaExportTool:
         """
         logger.info("尝试使用日志文件中的链接导出数据")
         game_log_path = ""
-        game_log_path_cn = os.path.join(CommonEnum.USERPROFILE.value, "AppData", "LocalLow", "miHoYo", "原神", "output_log.txt")
-        game_log_path_global = os.path.join(CommonEnum.USERPROFILE.value, "AppData", "LocalLow", "miHoYo", "Genshin Impact", "output_log.txt")
+        game_log_path_cn = os.path.join(
+            CommonEnum.USERPROFILE.value,
+            "AppData",
+            "LocalLow",
+            "miHoYo",
+            "原神",
+            "output_log.txt",
+        )
+        game_log_path_global = os.path.join(
+            CommonEnum.USERPROFILE.value,
+            "AppData",
+            "LocalLow",
+            "miHoYo",
+            "Genshin Impact",
+            "output_log.txt",
+        )
 
         if os.path.isfile(game_log_path_cn):
             logger.debug("检测到国服日志文件")

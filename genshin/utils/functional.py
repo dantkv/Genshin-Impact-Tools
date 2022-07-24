@@ -10,6 +10,7 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     try:
         if platform.system() == "Windows":
             from msvcrt import getch
+
             getch()
 
         else:
@@ -41,4 +42,5 @@ def catchException(message: str = "执行出错", level: str = "error"):
             return result
 
         return decorated
+
     return callFunction
