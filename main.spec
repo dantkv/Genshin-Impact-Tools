@@ -3,20 +3,26 @@
 
 block_cipher = None
 
+SRC_ROOT_DIR = "genshin/"
+
 file_list = [
-    'src/main.py',
-    'src/common.py',
-    'src/config.py',
-    'src/gacha_export.py',
-    'src/utils.py',
-    'src/update.py',
+    SRC_ROOT_DIR + "main.py",
+    SRC_ROOT_DIR + "common.py",
+    SRC_ROOT_DIR + "common.py",
+    SRC_ROOT_DIR + "module/__init__.py",
+    SRC_ROOT_DIR + "module/gacha_export.py",
+    SRC_ROOT_DIR + "module/update.py",
+    SRC_ROOT_DIR + "utils/__init__.py",
+    SRC_ROOT_DIR + "utils/functional.py",
+    SRC_ROOT_DIR + "utils/logger.py",
+    SRC_ROOT_DIR + "utils/version.py",
 ]
 
-resource_path = 'resource'
+resource_path = "resource"
 
-exe_name = 'Genshin_Impact_Tools'
+exe_name = "Genshin_Impact_Tools"
 
-icon_path = 'resource/ys.ico'
+icon_path = "resource/ys.ico"
 
 data_list = [
     (resource_path, resource_path)
