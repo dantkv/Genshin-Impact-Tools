@@ -6,8 +6,13 @@ name: Python test
 on:
   push:
     branches: [ "main" ]
+    paths:
+      - 'genshin'
+      - 'tests'
   pull_request:
-    branches: [ "main" ]
+    paths:
+      - 'genshin'
+      - 'tests'
 
 permissions:
   contents: read
