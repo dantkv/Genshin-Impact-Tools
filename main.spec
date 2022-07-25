@@ -7,11 +7,17 @@ SRC_ROOT_DIR = "genshin/"
 
 file_list = [
     SRC_ROOT_DIR + "main.py",
-    SRC_ROOT_DIR + "common.py",
-    SRC_ROOT_DIR + "common.py",
+    SRC_ROOT_DIR + "config.py",
+    SRC_ROOT_DIR + "__init__.py",
+
+    SRC_ROOT_DIR + "common/__init__.py",
+    SRC_ROOT_DIR + "common/const.py",
+    SRC_ROOT_DIR + "common/user.py",
+    
     SRC_ROOT_DIR + "module/__init__.py",
     SRC_ROOT_DIR + "module/gacha_export.py",
     SRC_ROOT_DIR + "module/update.py",
+    
     SRC_ROOT_DIR + "utils/__init__.py",
     SRC_ROOT_DIR + "utils/functional.py",
     SRC_ROOT_DIR + "utils/logger.py",

@@ -1,11 +1,12 @@
 import os
 import traceback
 
-from genshin.common import USER_DATA_ENUM, CommonEnum
+from genshin.common.const import CommonEnum
+from genshin.common.user import USER_DATA_ENUM
 from genshin.config import GlobalConfig, GlobalConfigEnum, UserConfig
 from genshin.module import update
 from genshin.module.gacha_export import GachaExportTool
-from genshin.utils.functional import pressAnyKeyToExit
+from genshin.utils.functional import press_any_key_to_exit
 from genshin.utils.logger import logger
 
 
@@ -19,7 +20,8 @@ def run():
     logger.debug("config" + str(global_config.setting))
     if global_config.get_key(GlobalConfigEnum.FLAG_CHECK_UPDATE.value):
         try:
-            update.upgrade()
+            if update.upgrade():
+                press_any_key_to_exit()
         except Exception:
             logger.warning("检查更新失败")
             logger.debug(traceback.format_exc())
@@ -30,17 +32,17 @@ def run():
     gacha_export_tool = GachaExportTool(user_config)
 
     if global_config.get_key(GlobalConfigEnum.FLAG_WRITE_TXT.value):
-        gacha_export_tool.generatorTXT()
+        gacha_export_tool.generator_txt()
     if global_config.get_key(GlobalConfigEnum.FLAG_WRITE_XLSX.value):
-        gacha_export_tool.generatorXLSX()
+        gacha_export_tool.generator_xlsx()
 
     # 导出数据
     if global_config.get_key(GlobalConfigEnum.FLAG_USE_CONFIG_URL.value):
-        status = gacha_export_tool.getGachaLogByConfig()
+        status = gacha_export_tool.get_gacha_log_by_config()
     if not status and global_config.get_key(GlobalConfigEnum.FLAG_USE_LOG_URL.value):
-        status = gacha_export_tool.getGachaLogByGameLog()
+        status = gacha_export_tool.get_gacha_log_by_game_log()
 
-    pressAnyKeyToExit()
+    press_any_key_to_exit()
 
 
 if __name__ == "__main__":
