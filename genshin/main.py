@@ -1,7 +1,8 @@
 import os
 import traceback
 
-from genshin.common import USER_DATA_ENUM, CommonEnum
+from genshin.common.const import CommonEnum
+from genshin.common.user import USER_DATA_ENUM
 from genshin.config import GlobalConfig, GlobalConfigEnum, UserConfig
 from genshin.module import update
 from genshin.module.gacha_export import GachaExportTool

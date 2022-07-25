@@ -6,7 +6,7 @@ import requests
 from tqdm import tqdm
 
 from genshin import __version__ as version
-from genshin.common import CommonEnum
+from genshin.common.const import CommonEnum
 from genshin.utils.logger import logger
 
 

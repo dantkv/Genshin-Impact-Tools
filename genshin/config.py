@@ -2,7 +2,7 @@ import json
 import os
 from enum import Enum
 
-from genshin.common import CommonEnum
+from genshin.common.const import CommonEnum
 from genshin.utils.functional import catch_exception
 from genshin.utils.logger import logger
 

@@ -7,7 +7,8 @@ from urllib import parse
 
 import requests
 
-from genshin.common import USER_DATA_ENUM, CommonEnum
+from genshin.common.const import CommonEnum
+from genshin.common.user import USER_DATA_ENUM
 from genshin.config import UserConfig, UserConfigEnum
 from genshin.utils.functional import catch_exception
 from genshin.utils.logger import logger
