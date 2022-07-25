@@ -19,7 +19,8 @@ def run():
     logger.debug("config" + str(global_config.setting))
     if global_config.get_key(GlobalConfigEnum.FLAG_CHECK_UPDATE.value):
         try:
-            update.upgrade()
+            if update.upgrade():
+                press_any_key_to_exit()
         except Exception:
             logger.warning("检查更新失败")
             logger.debug(traceback.format_exc())
