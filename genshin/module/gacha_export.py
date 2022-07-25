@@ -13,14 +13,14 @@ from genshin.utils.functional import catchException
 from genshin.utils.logger import logger
 
 # 抽卡类型ID
-GACHA_QUERY_TYPE_IDS = ["100", "200", "301", "302"]
+_GACHA_QUERY_TYPE_IDS = ["100", "200", "301", "302"]
 
 # 抽卡类型名
-GACHA_QUERY_TYPE_NAMES = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
+_GACHA_QUERY_TYPE_NAMES = ["新手祈愿", "常驻祈愿", "角色活动祈愿", "武器活动祈愿"]
 
-GACHA_QUERY_TYPE_DICT = dict(zip(GACHA_QUERY_TYPE_IDS, GACHA_QUERY_TYPE_NAMES))
+_GACHA_QUERY_TYPE_DICT = dict(zip(_GACHA_QUERY_TYPE_IDS, _GACHA_QUERY_TYPE_NAMES))
 
-GACHA_TYPE_DICT = {
+_GACHA_TYPE_DICT = {
     "100": "新手祈愿",
     "200": "常驻祈愿",
     "301": "角色活动祈愿",
@@ -55,7 +55,7 @@ class GachaData:
         """
         if not self.data:
             return merge_data
-        for gacha_type in GACHA_QUERY_TYPE_DICT:
+        for gacha_type in _GACHA_QUERY_TYPE_DICT:
             history_gacha_log = merge_data["gacha_log"][gacha_type]
             new_gacha_log = self.data["gacha_log"][gacha_type]
             if len(history_gacha_log):
@@ -67,7 +67,7 @@ class GachaData:
                 temp_gacha_data = new_gacha_log
 
             history_gacha_log.extend(temp_gacha_data)
-            logger.info(f"抽卡历史记录合并 ====+> {GACHA_QUERY_TYPE_DICT[gacha_type]} \t增加了 { len(temp_gacha_data) } \t条记录")
+            logger.info(f"抽卡历史记录合并 ====+> {_GACHA_QUERY_TYPE_DICT[gacha_type]} \t增加了 { len(temp_gacha_data) } \t条记录")
 
         return merge_data
 
@@ -94,7 +94,7 @@ class GachaData:
         gacha_list = []
         end_id = "0"
         for page in range(1, 9999):
-            logger.info(f"正在获取 {GACHA_QUERY_TYPE_DICT[gacha_type_id]} 第 {page} 页")
+            logger.info(f"正在获取 {_GACHA_QUERY_TYPE_DICT[gacha_type_id]} 第 {page} 页")
             api = self._updateQueryURL(gacha_type_id, size, page, end_id)
             r = requests.get(api).content.decode("utf-8")
             j = json.loads(r)
@@ -134,10 +134,10 @@ class GachaData:
 
         logger.info("开始获取抽卡记录")
         self.data["uid"] = self.uid
-        self.data["gacha_type"] = GACHA_QUERY_TYPE_DICT
+        self.data["gacha_type"] = _GACHA_QUERY_TYPE_DICT
         self.data["gacha_log"] = {}
 
-        for gacha_type_id in GACHA_QUERY_TYPE_IDS:
+        for gacha_type_id in _GACHA_QUERY_TYPE_IDS:
             # 查询时间顺序由近到远
             gachaLog = self._getGachaLogsByTypeId(gacha_type_id)
             # 翻转后正序排列
@@ -192,9 +192,9 @@ class GeneratorXLSX(BaseGenerator):
         star_4 = workbook.add_format({"color": "#a256e1", "bold": True})
         star_3 = workbook.add_format({"color": "#8e8e8e"})
 
-        for gacha_type_id in GACHA_QUERY_TYPE_IDS:
+        for gacha_type_id in _GACHA_QUERY_TYPE_IDS:
             gacha_type_List = self.data["gacha_log"][gacha_type_id][:]
-            gacha_type_name = GACHA_TYPE_DICT[gacha_type_id]
+            gacha_type_name = _GACHA_TYPE_DICT[gacha_type_id]
 
             logger.debug("开始写入 {}, 共 {} 条数据", gacha_type_name, len(gacha_type_List))
             worksheet = workbook.add_worksheet(gacha_type_name)
@@ -217,7 +217,7 @@ class GeneratorXLSX(BaseGenerator):
                 item_type = gacha["item_type"]
                 rank_type = int(gacha["rank_type"])
                 gacha_type = gacha["gacha_type"]
-                gacha_type_name = GACHA_TYPE_DICT.get(gacha_type, "")
+                gacha_type_name = _GACHA_TYPE_DICT.get(gacha_type, "")
                 total_counter = total_counter + 1
                 pity_counter = pity_counter + 1
                 excel_data = [
@@ -349,7 +349,7 @@ class GeneratorTXT(BaseGenerator):
 
         logger.debug("开始生成TXT报告……")
         reports = []
-        for gacha_type_id in GACHA_QUERY_TYPE_IDS:
+        for gacha_type_id in _GACHA_QUERY_TYPE_IDS:
             data = self.result[gacha_type_id]
             if not data["total_count"]:
                 reports.append(f"{data['name']}无抽卡记录\n")
@@ -373,7 +373,7 @@ class GachaReport:
     抽卡报告类
     """
 
-    def __init__(self, data: dict = None, generator_list: list = []) -> None:
+    def __init__(self, data: dict = None, generator_list: list[BaseGenerator] = []) -> None:
         """
         data: 原始抽卡记录
         """
