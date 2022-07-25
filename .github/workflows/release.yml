@@ -20,10 +20,10 @@ jobs:
         include:
           - os: windows-2022
             python-version: "3.9"
-            extra-name: ""
+            extra-name: "win10"
           - os: windows-2019
             python-version: "3.7"
-            extra-name: "_win7"
+            extra-name: "win7"
     
     runs-on: ${{ matrix.os }}
     steps:
@@ -62,7 +62,7 @@ jobs:
     - name: Rename file 
       id: rename-file
       run: |
-        echo "::set-output name=file-name::${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}_${{github.ref_name}}"
+        echo "::set-output name=file-name::${{env.RELEASE_FILE_NAME}}_${{ matrix.extra-name }}_${{github.ref_name}}"
         Rename-Item -Path dist\${{env.RELEASE_FILE_NAME}}.exe `
               ${{env.RELEASE_FILE_NAME}}${{ matrix.extra-name }}_${{github.ref_name}}.exe
 
