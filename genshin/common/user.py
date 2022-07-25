@@ -23,8 +23,6 @@ class UserDataEnum:
         self.user_data_path = os.path.join(CommonEnum.DATA_PATH.value, str(self.uid))
         # 抽卡记录文件路径
         self.gacha_data_file_path = os.path.join(self.user_data_path, "gacha_data.json")
-        # 统计结果路径
-        self.result_file_path = os.path.join(self.user_data_path, "result.json")
         # 配置文件路径
         self.result_file_path = os.path.join(self.user_data_path, "config.json")
 
