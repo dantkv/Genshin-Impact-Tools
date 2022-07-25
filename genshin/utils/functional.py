@@ -5,7 +5,7 @@ from functools import wraps
 from genshin.utils.logger import logger
 
 
-def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
+def press_any_key_to_exit(msg="执行结束，按任意键退出"):
     logger.info(msg)
     try:
         if platform.system() == "Windows":
@@ -22,8 +22,8 @@ def pressAnyKeyToExit(msg="执行结束，按任意键退出"):
     exit()
 
 
-def catchException(message: str = "执行出错", level: str = "error"):
-    def callFunction(func):
+def catch_exception(message: str = "执行出错", level: str = "error"):
+    def call_function(func):
         @wraps(func)
         def decorated(*args, **kwargs):
             try:
@@ -43,4 +43,4 @@ def catchException(message: str = "执行出错", level: str = "error"):
 
         return decorated
 
-    return callFunction
+    return call_function

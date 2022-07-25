@@ -6,11 +6,11 @@ import requests
 from tqdm import tqdm
 
 from genshin.common import CommonEnum
-from genshin.utils.functional import pressAnyKeyToExit
+from genshin.utils.functional import press_any_key_to_exit
 from genshin.utils.logger import logger
 
 
-def getLatestVersionInfo():
+def get_latest_version_info():
     """
     获取最后的Release信息
     """
@@ -27,7 +27,7 @@ def getLatestVersionInfo():
     return tag_name, download_info
 
 
-def checkVersion(tag_name):
+def check_version(tag_name):
     """
     检查软件版本是否需要更新
 
@@ -42,12 +42,12 @@ def checkVersion(tag_name):
     return False
 
 
-def updateVersion():
+def update_version():
     """
     更新软件版本号
     """
 
-    def getNextVersion(version):
+    def get_next_version(version):
         """
         版本号+1
         """
@@ -68,16 +68,16 @@ def updateVersion():
         nums[0] = "v" + nums[0]
         return ".".join(nums)
 
-    tag_name, download_info = getLatestVersionInfo()
+    tag_name, download_info = get_latest_version_info()
     version_info = dict()
-    version_info["version"] = getNextVersion(tag_name)
+    version_info["version"] = get_next_version(tag_name)
     with open(os.path.join(CommonEnum.RESOURCE_FILE_PATH.value, "version.info"), "w", encoding="utf8") as f:
         json.dump(version_info, f, ensure_ascii=False, sort_keys=False, indent=4)
 
     return download_info
 
 
-def getURLForSystem(info):
+def get_url_from_system(info):
     """
     根据系统版本获得对应文件链接
     """
@@ -96,14 +96,14 @@ def upgrade():
     升级软件
     """
     logger.info("检测软件更新……")
-    tag_name, download_info = getLatestVersionInfo()
+    tag_name, download_info = get_latest_version_info()
 
-    if not checkVersion(tag_name):
+    if not check_version(tag_name):
         logger.info("软件已是最新")
         return
     logger.warning("正在更新软件，请误关闭窗口")
 
-    name, url = getURLForSystem(download_info)
+    name, url = get_url_from_system(download_info)
 
     if not os.path.exists(CommonEnum.TEMP_PATH.value):
         os.mkdir(CommonEnum.TEMP_PATH.value)
@@ -123,4 +123,4 @@ def upgrade():
     logger.info("文件下载完成，请解压替换文件")
     logger.info("文件位于{}", download_file_path)
 
-    pressAnyKeyToExit()
+    press_any_key_to_exit()

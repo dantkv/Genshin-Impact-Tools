@@ -3,7 +3,7 @@ import os
 from enum import Enum
 
 from genshin.common import CommonEnum
-from genshin.utils.functional import catchException
+from genshin.utils.functional import catch_exception
 from genshin.utils.logger import logger
 
 
@@ -71,11 +71,11 @@ class GlobalConfig(BaseConfig):
 
         self.save()
 
-    @catchException("配置文件加载失败", "debug")
+    @catch_exception("配置文件加载失败", "debug")
     def read(self):
         super().read()
 
-    @catchException("配置文件写入失败")
+    @catch_exception("配置文件写入失败")
     def save(self):
         super().save()
         logger.debug("重新写入配置文件")
@@ -102,11 +102,11 @@ class UserConfig(BaseConfig):
         self.read()
         self.save()
 
-    @catchException("用户配置文件加载失败", "debug")
+    @catch_exception("用户配置文件加载失败", "debug")
     def read(self):
         super().read()
 
-    @catchException("用户配置文件写入失败")
+    @catch_exception("用户配置文件写入失败")
     def save(self):
         super().save()
         logger.debug("重新写入用户配置文件")

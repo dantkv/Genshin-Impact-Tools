@@ -9,7 +9,7 @@ import requests
 
 from genshin.common import USER_DATA_ENUM, CommonEnum
 from genshin.config import UserConfig, UserConfigEnum
-from genshin.utils.functional import catchException
+from genshin.utils.functional import catch_exception
 from genshin.utils.logger import logger
 
 # 抽卡类型ID
@@ -40,8 +40,8 @@ class GachaData:
         # 抽卡数据
         self.data = dict()
 
-    @catchException("保存抽卡记录失败")
-    def saveData(self):
+    @catch_exception("保存抽卡记录失败")
+    def save_data(self):
         """
         保存抽卡数据
         """
@@ -49,7 +49,7 @@ class GachaData:
             json.dump(self.data, f, ensure_ascii=False, sort_keys=False, indent=4)
         return True
 
-    def _mergeData(self, merge_data: dict):
+    def _merge_data(self, merge_data: dict):
         """
         合并历史查询记录
         """
@@ -71,9 +71,9 @@ class GachaData:
 
         return merge_data
 
-    def mergeHistoryData(self):
-        @catchException("历史抽卡记录文件读取失败")
-        def loadHistory():
+    def merge_history_data(self):
+        @catch_exception("历史抽卡记录文件读取失败")
+        def load_history():
             if not os.path.exists(USER_DATA_ENUM.gacha_data_file_path):
                 logger.debug("历史抽卡记录文件不存在")
                 return None
@@ -81,11 +81,11 @@ class GachaData:
                 history_data = json.load(f)
             return history_data
 
-        history_data = loadHistory()
+        history_data = load_history()
         if history_data:
-            self.data = self._mergeData(history_data)
+            self.data = self._merge_data(history_data)
 
-    def _getGachaLogsByTypeId(self, gacha_type_id):
+    def _get_gacha_logs_by_type_id(self, gacha_type_id):
         """
         根据抽卡类型查询抽卡记录
         """
@@ -95,7 +95,7 @@ class GachaData:
         end_id = "0"
         for page in range(1, 9999):
             logger.info(f"正在获取 {_GACHA_QUERY_TYPE_DICT[gacha_type_id]} 第 {page} 页")
-            api = self._updateQueryURL(gacha_type_id, size, page, end_id)
+            api = self._update_query_url(gacha_type_id, size, page, end_id)
             r = requests.get(api).content.decode("utf-8")
             j = json.loads(r)
             gacha = j["data"]["list"]
@@ -107,7 +107,7 @@ class GachaData:
             time.sleep(0.5 + random())
         return gacha_list
 
-    def _updateQueryURL(self, gacha_type, size, page, end_id=""):
+    def _update_query_url(self, gacha_type, size, page, end_id=""):
         """
         设置分页查询参数
         """
@@ -127,7 +127,7 @@ class GachaData:
         api = path + "?" + param
         return api
 
-    def getGachaLog(self):
+    def get_gacha_log(self):
         """
         获取最近6个月抽卡记录
         """
@@ -139,7 +139,7 @@ class GachaData:
 
         for gacha_type_id in _GACHA_QUERY_TYPE_IDS:
             # 查询时间顺序由近到远
-            gachaLog = self._getGachaLogsByTypeId(gacha_type_id)
+            gachaLog = self._get_gacha_logs_by_type_id(gacha_type_id)
             # 翻转后正序排列
             gachaLog.reverse()
             self.data["gacha_log"][gacha_type_id] = gachaLog
@@ -269,7 +269,7 @@ class GeneratorTXT(BaseGenerator):
         super().__init__(data)
         self.result = {}
 
-    def gachaLogCounter(self):
+    def gacha_log_counter(self):
         """
         统计数据并保存
         """
@@ -327,7 +327,7 @@ class GeneratorTXT(BaseGenerator):
         """
         生成抽卡报告
         """
-        self.gachaLogCounter()
+        self.gacha_log_counter()
 
         if not self.result:
             logger.error("抽卡统计结果为空")
@@ -356,8 +356,8 @@ class GeneratorTXT(BaseGenerator):
                 continue
             reports.append(report_template(data))
 
-        @catchException("抽卡报告保存失败")
-        def saveReport():
+        @catch_exception("抽卡报告保存失败")
+        def save_report():
             """
             保存抽卡报告
             """
@@ -365,7 +365,7 @@ class GeneratorTXT(BaseGenerator):
                 f.write("\n".join(reports))
             return True
 
-        return saveReport()
+        return save_report()
 
 
 class GachaReport:
@@ -380,13 +380,13 @@ class GachaReport:
         self.data = data
         self.generator_list = generator_list
 
-    def addGenerator(self, generaotor):
+    def add_generator(self, generaotor):
         self.generator_list.append(generaotor)
 
-    def removeGenerator(self, generaotor):
+    def remove_generator(self, generaotor):
         self.generator_list.remove(generaotor)
 
-    def runGenerator(self):
+    def run_generator(self):
         logger.info("开始生成报告……")
         result = True
         for generator in self.generator_list:
@@ -408,14 +408,14 @@ class GachaExportTool:
 
     def _export_data(self, url: str):
         gacha_data = GachaData(url, self.uid)
-        gacha_data.getGachaLog()
-        gacha_data.mergeHistoryData()
-        gacha_data.saveData()
+        gacha_data.get_gacha_log()
+        gacha_data.merge_history_data()
+        gacha_data.save_data()
 
         self.report.data = gacha_data.data
-        return self.report.runGenerator()
+        return self.report.run_generator()
 
-    def _checkURL(self, url: str):
+    def _check_url(self, url: str):
         """
         测试查询链接有效性
         """
@@ -439,7 +439,7 @@ class GachaExportTool:
 
         return True
 
-    def _getQueryURL(self, url):
+    def _get_query_url(self, url):
         logger.debug("log url =====> {}", url)
         spliturl = str(url).split("?")
         if "webstatic-sea" in spliturl[0] or "hk4e-api-os" in spliturl[0]:
@@ -449,7 +449,7 @@ class GachaExportTool:
         url = "?".join(spliturl)
         return url
 
-    def getGachaLogByConfig(self):
+    def get_gacha_log_by_config(self):
         """
         使用配置文件查询抽卡日志
         """
@@ -459,14 +459,14 @@ class GachaExportTool:
             logger.warning("配置文件中链接为空")
             return False
 
-        url = self._getQueryURL(url)
-        if not self._checkURL(url):
+        url = self._get_query_url(url)
+        if not self._check_url(url):
             return False
         logger.info("配置文件中的链接可用，将使用该链接导出数据")
         logger.debug("config file url =====> {}", url)
         return self._export_data(url)
 
-    def getGachaLogByGameLog(self):
+    def get_gacha_log_by_game_log(self):
         """
         使用游戏日志文件链接查询抽卡日志
         """
@@ -515,13 +515,13 @@ class GachaExportTool:
                 else:
                     logger.info("输入有误, 重新输入")
 
-        def getURLFromLog(game_log_path=None):
+        def get_url_from_log(game_log_path=None):
             """
             从日志文件提取抽卡链接
             """
 
-            @catchException()
-            def readLogFile(path):
+            @catch_exception()
+            def read_log_file(path):
                 if not os.path.isfile(path):
                     logger.warning("未检测到日志文件")
                     return ""
@@ -530,7 +530,7 @@ class GachaExportTool:
                 return log
 
             url = None
-            log = readLogFile(game_log_path)
+            log = read_log_file(game_log_path)
             line_number = 0
             for line in log:
                 line_number = line_number + 1
@@ -538,21 +538,21 @@ class GachaExportTool:
                     url = line.replace("OnGetWebViewPageFinish:", "").replace("\n", "")
             return url
 
-        url = getURLFromLog(game_log_path)
+        url = get_url_from_log(game_log_path)
         if not url:
             logger.error("日志文件中没有链接，请打开游戏抽卡历史记录界面后重试")
             return False
 
-        url = self._getQueryURL(url)
+        url = self._get_query_url(url)
         logger.debug("检查日志文件中的链接")
-        if not self._checkURL(url):
+        if not self._check_url(url):
             logger.info("请打开游戏抽卡界面后重试")
             return False
         self.user_config.set_key(UserConfigEnum.URL.value, url)
         return self._export_data(url)
 
-    def generatorTXT(self):
-        self.report.addGenerator(GeneratorTXT())
+    def generator_txt(self):
+        self.report.add_generator(GeneratorTXT())
 
-    def generatorXLSX(self):
-        self.report.addGenerator(GeneratorXLSX())
+    def generator_xlsx(self):
+        self.report.add_generator(GeneratorXLSX())
